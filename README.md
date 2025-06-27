@@ -108,7 +108,7 @@ Follow these steps to set up BookBuddy on your local machine:
 3.  **Frontend Setup:**
 
     ```bash
-    cd ../frontend
+    cd frontend
     npm install
     npm run dev
     ```
@@ -123,7 +123,7 @@ The real-time chat functionality is powered by **Socket.IO**, ensuring instant m
 
 ## 🔎 Search & Filters
 
-Discover your next read with powerful search and filter options. Books can be easily filtered by:
+Discover your next read with powerful search option. Books can be easily searched by:
 
   * **Author Name**
   * **Genre**
