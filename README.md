@@ -139,13 +139,11 @@ BookBuddy supports two distinct user roles, each with specific permissions and f
 
       * View books and explore various genres.
       * Engage in real-time chat with other users.
-      * Maintain a personalized reading list.
 
   * **Author:**
 
       * Upload and share their own books with the community.
       * Manage reviews for their published works.
-      * Interact directly with readers.
 
 -----
 
