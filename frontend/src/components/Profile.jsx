@@ -2,7 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Logo from './Logo.jpg';
-import { FaTrashAlt, FaStar } from 'react-icons/fa'; // ✅ Use FaStar for ratings
+import { FaTrashAlt, FaStar } from 'react-icons/fa';
 import Footer from './footer';
 
 const Profile = () => {
@@ -12,6 +12,9 @@ const Profile = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [enlargedImage, setEnlargedImage] = useState(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState(null);
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -30,11 +33,17 @@ const Profile = () => {
     if (user?.email) fetchUserBooks();
   }, [user]);
 
-  const handleDelete = async (bookId) => {
-    if (!window.confirm('Are you sure you want to delete this book?')) return;
+  const confirmDeleteBook = (bookId) => {
+    setBookToDelete(bookId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
     try {
-      await fetch(`http://localhost:3001/api/books/${bookId}`, { method: 'DELETE' });
-      setBooks(prev => prev.filter(b => b._id !== bookId));
+      await fetch(`http://localhost:3001/api/books/${bookToDelete}`, { method: 'DELETE' });
+      setBooks(prev => prev.filter(b => b._id !== bookToDelete));
+      setShowDeleteModal(false);
+      setBookToDelete(null);
     } catch (err) {
       console.error('Error deleting book:', err);
     }
@@ -103,7 +112,7 @@ const Profile = () => {
                     <img src={profilePicUrl} alt="User" className="w-8 h-8 rounded-full object-cover" />
                     <span className="text-sm font-semibold text-gray-800">{user.name}</span>
                   </div>
-                  <button onClick={() => handleDelete(book._id)} className="text-red-500 hover:text-red-700">
+                  <button onClick={() => confirmDeleteBook(book._id)} className="text-red-500 hover:text-red-700">
                     <FaTrashAlt />
                   </button>
                 </div>
@@ -118,7 +127,7 @@ const Profile = () => {
                 <div className="px-4 py-2 space-y-1">
                   <div className="flex space-x-1 py-2 text-yellow-500">
                     {Array.from({ length: book.rating }).map((_, i) => (
-                      <FaStar key={i} /> // ✅ Fixed: Now shows stars
+                      <FaStar key={i} />
                     ))}
                   </div>
                   <h3 className="text-lg font-semibold text-gray-800">{book.title}</h3>
@@ -159,6 +168,19 @@ const Profile = () => {
             <div className="flex justify-center gap-4">
               <button onClick={() => setShowLogoutModal(false)} className="px-4 py-2 bg-gray-300 rounded">Cancel</button>
               <button onClick={logout} className="px-4 py-2 bg-red-500 text-white rounded">Logout</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 shadow-lg w-80 text-center">
+            <h3 className="text-xl font-semibold mb-4">Delete Book</h3>
+            <p className="text-gray-600 mb-6">Are you sure you want to delete this book?</p>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => setShowDeleteModal(false)} className="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+              <button onClick={handleDelete} className="px-4 py-2 bg-red-500 text-white rounded">Delete</button>
             </div>
           </div>
         </div>
