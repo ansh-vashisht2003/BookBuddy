@@ -126,19 +126,21 @@ const ShowBooks = () => {
       </div>
 
       {/* Books List */}
-      <div className="px-6 mt-10 pb-16">
+      <div className="px-6 mt-10 pb-20">
         <h2 className="text-2xl font-bold mb-6 text-indigo-700">
           {genre ? `Genre: ${genre} Books` : 'All Books'}
         </h2>
 
         {filteredBooks.length === 0 ? (
-          <p className="text-gray-600 italic">No books found in this category.</p>
+          <p className="text-gray-600 italic text-center pb-20 sm:pb-28 md:pb-36 lg:pb-44 xl:pb-52">
+            No books found in this category.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredBooks.map((book, idx) => (
               <div key={idx} className="bg-white p-5 rounded-2xl shadow hover:shadow-xl transition duration-300 border border-gray-100">
                 
-                {/* Uploader (Circular Pic ✅) */}
+                {/* Uploader Info */}
                 <div className="flex items-center gap-3 mb-4">
                   <img
                     src={`http://localhost:3001/uploads/${book.profile_pic ?? 'default.jpg'}`}
@@ -148,7 +150,7 @@ const ShowBooks = () => {
                   <span className="font-semibold text-gray-800">{book.user_name}</span>
                 </div>
 
-                {/* Book Cover with Enlarge on Click ✅ */}
+                {/* Book Cover */}
                 <img
                   src={`http://localhost:3001/bookpic/${book.book_cover || 'default-book.jpg'}`}
                   alt={book.title}
@@ -159,7 +161,7 @@ const ShowBooks = () => {
                   }}
                 />
 
-                {/* Star Ratings */}
+                {/* Ratings */}
                 <div className="flex mb-2 text-yellow-500">
                   {Array.from({ length: book.rating || 0 }, (_, i) => (
                     <FaStar key={i} className="mr-1" />
