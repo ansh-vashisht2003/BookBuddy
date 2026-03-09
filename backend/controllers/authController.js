@@ -1,93 +1,92 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
+const sendConfirmationEmail = require('../utils/mailer'); 
 
-// Signup Controller
+/**
+ * @desc    Register a new user & send welcome email
+ * @route   POST /api/users/signup
+ */
 const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     const profile_pic = req.file?.filename;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered' });
+    // 1. Check if user already exists
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ error: "Email already registered" });
     }
 
-    // Hash password
+    // 2. Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create and save new user
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      profile_pic
+    // 3. Save User to MongoDB
+    const user = new User({ 
+      name, 
+      email, 
+      password: hashedPassword, 
+      role, 
+      profile_pic 
     });
+    await user.save();
 
-    await newUser.save();
+    // 4. Trigger Email in Background
+    // We don't use 'await' here because we want the user to get a 
+    // "Success" response immediately without waiting for the email server.
+    sendConfirmationEmail(email, name, password)
+      .then(sent => {
+        if (sent) console.log(`📧 Welcome email sent to ${email}`);
+      })
+      .catch(err => console.error("📧 Email background error:", err.message));
 
-    // Send welcome email
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'anshvashisht.2003@gmail.com',
-        pass: 'cclk szit igox hrcm',
-      },
+    // 5. Send Success Response
+    res.status(201).json({ 
+      message: 'Signup successful! Welcome to BookBuddy.',
+      user: { id: user._id, name: user.name, email: user.email }
     });
-
-    await transporter.sendMail({
-      from: 'anshvashisht.2003@gmail.com',
-      to: email,
-      subject: 'Welcome to BookBuddy!',
-      html: `
-        <p>Hello ${name},</p>
-        <p>Your signup was successful.</p>
-        <p><strong>Email:</strong> ${email}<br><strong>Password:</strong> ${password}</p>
-        <p>Start your reading journey with BookBuddy!</p>
-      `,
-    });
-
-    res.status(201).json({ message: 'Signup successful' });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error during signup' });
+    console.error("Signup Error:", err);
+    res.status(500).json({ error: "Server error during signup" });
   }
 };
 
-// Login Controller
+/**
+ * @desc    Authenticate user & Login
+ * @route   POST /api/users/login
+ */
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
+    // 1. Find user by email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ error: 'User not found' });
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
 
-    // Compare passwords
+    // 2. Compare entered password with hashed password in DB
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: 'Incorrect password' });
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect password" });
+    }
 
-    res.status(200).json({
-      message: 'Login successful',
+    // 3. Send Success Response
+    res.status(200).json({ 
+      message: "Login successful", 
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        profile_pic: user.profile_pic,
-      },
+        profile_pic: user.profile_pic
+      } 
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error during login' });
+    console.error("Login Error:", err);
+    res.status(500).json({ error: "Server error during login" });
   }
 };
 
-module.exports = {
-  signup,
-  login,
-};
+module.exports = { signup, login };
