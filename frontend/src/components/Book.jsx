@@ -155,12 +155,24 @@ const ShowBooks = () => {
                   </div>
 
                   {/* Book Cover */}
+<<<<<<< HEAD
                          <img
   src={`http://localhost:3001/bookpic/${book.book_cover}`}
   alt={book.title}
   className="w-full h-60 object-contain bg-gray-100 cursor-pointer p-2"
   onClick={() => setEnlargedImage(`http://localhost:3001/bookpic/${book.book_cover}`)}
 />
+=======
+                  <img
+                    src={`http://localhost:3001/bookpic/${book.book_cover || 'default-book.jpg'}`}
+                    alt={book.title}
+                    onClick={() =>
+                      setEnlargedImage(`http://localhost:3001/bookpic/${book.book_cover || 'default-book.jpg'}`)
+                    }
+                    className="w-full h-52 object-cover rounded-lg mb-3 shadow-sm cursor-pointer hover:opacity-90 transition"
+                  />
+
+>>>>>>> 88582f5
                   {/* Rating */}
                   <div className="flex mb-2 text-yellow-500">
                     {Array.from({ length: book.rating || 0 }, (_, i) => (
