@@ -131,7 +131,10 @@ const DashboardAuthor = () => {
                   <img
                     src={`http://localhost:3001/bookpic/${book.book_cover}`}
                     alt={book.title}
-                    className="w-full h-48 object-cover rounded-md mb-3 cursor-pointer"
+                          
+  className="w-full h-60 object-contain bg-gray-100 cursor-pointer p-2"
+ 
+                  
                     onClick={() =>
                       setSelectedImage(`http://localhost:3001/bookpic/${book.book_cover}`)
                     }

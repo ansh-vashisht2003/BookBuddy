@@ -17,26 +17,46 @@ transporter.verify((error, success) => {
   }
 });
 
-const sendConfirmationEmail = async (email, name, password) => {
+const sendConfirmationEmail = async (email, name) => {
   try {
     const mailOptions = {
       from: `"BookBuddy 📚" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Welcome to BookBuddy!",
       html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-          <h2 style="color: #4A90E2;">Hello, ${name}!</h2>
-          <p>Welcome to <strong>BookBuddy</strong>. Your account has been successfully created.</p>
-          <p>Your login password is: <strong>${password}</strong></p>
-          <p>Keep this safe!</p>
+        <div style="font-family: Arial, sans-serif; padding: 25px; border: 1px solid #eee; border-radius: 10px; max-width: 600px; margin:auto;">
+          
+          <h2 style="color:#4A90E2;">Welcome to BookBuddy, ${name}! 📚</h2>
+
+          <p>Your account has been successfully created.</p>
+
+          <p>
+            You can now explore books, discover new reads, and manage your reading journey 
+            with <strong>BookBuddy</strong>.
+          </p>
+
+          <p>
+            Start exploring your next favorite book today and build your personal reading collection.
+          </p>
+
+          <p>
+            If you did not create this account, you can safely ignore this email.
+          </p>
+
           <br>
-          <p>Best regards,<br>The BookBuddy Team</p>
+
+          <p style="font-size:14px;color:#555;">
+            Happy Reading! 📖 <br>
+            <strong>The BookBuddy Team</strong>
+          </p>
+
         </div>
       `,
     };
 
     await transporter.sendMail(mailOptions);
     return true;
+
   } catch (error) {
     console.error("❌ SendMail Error:", error.message);
     return false;

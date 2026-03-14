@@ -118,11 +118,11 @@ const Profile = () => {
                 </div>
 
                 <img
-                  src={`http://localhost:3001/bookpic/${book.book_cover}`}
-                  alt={book.title}
-                  className="w-full h-60 object-cover cursor-pointer"
-                  onClick={() => setEnlargedImage(`http://localhost:3001/bookpic/${book.book_cover}`)}
-                />
+  src={`http://localhost:3001/bookpic/${book.book_cover}`}
+  alt={book.title}
+  className="w-full h-60 object-contain bg-gray-100 cursor-pointer p-2"
+  onClick={() => setEnlargedImage(`http://localhost:3001/bookpic/${book.book_cover}`)}
+/>
 
                 <div className="px-4 py-2 space-y-1">
                   <div className="flex space-x-1 py-2 text-yellow-500">
