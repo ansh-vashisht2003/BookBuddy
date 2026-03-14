@@ -59,7 +59,7 @@ const ShowBooks = () => {
               onClick={() => navigate(path)}
               className="text-gray-700 hover:text-indigo-600 font-medium transition hover:underline underline-offset-4"
             >
-              {['Home', 'Upload', 'Chat', 'Contact Us', 'Profile'][i]}
+              {['Home', 'Upload', /*'Chat',*/ 'Contact Us', 'Profile'][i]}
             </button>
           ))}
         </nav>

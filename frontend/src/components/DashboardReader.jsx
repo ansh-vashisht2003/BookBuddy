@@ -36,7 +36,7 @@ const DashboardReader = () => {
           {[
             { label: 'Home', path: '/dashboardreader' },
             { label: 'Upload', path: '/terms' },
-            { label: 'Chat', path: '/chat' },
+           { label: 'Chat', path: '/chat' },
             { label: 'Contact Us', path: '/contact' },
             { label: 'Profile', path: '/profile' },
           ].map((item, index) => (

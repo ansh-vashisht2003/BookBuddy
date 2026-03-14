@@ -1,42 +1,66 @@
+require("dotenv").config(); // ✅ Always Line 1
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const connectDB = require("./config/db");
 const http = require("http");
 const socketIo = require("socket.io");
+
+// Internal Imports
+const connectDB = require("./config/db");
 const setupSocket = require("./socket");
 
+// Initialize Express
 const app = express();
+
+// Database Connection
 connectDB();
 
-// Middlewares
+/* ===============================
+      MIDDLEWARES
+================================ */
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Static Folders
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/bookpic", express.static(path.join(__dirname, "bookpic")));
 
-// Routes
+/* ===============================
+      ROUTES
+================================ */
 app.use("/api/users", require("./routes/authRoutes"));
 app.use("/api/contact", require("./routes/contact"));
 app.use("/api/books", require("./routes/bookRoutes"));
-app.use("/api/chat", require("./routes/chatRoutes")); // 👈 Chat routes
+app.use("/api/chat", require("./routes/chatRoutes"));
 
-// Create HTTP server
+/* ===============================
+      HTTP & SOCKET SERVER
+================================ */
 const server = http.createServer(app);
 
-// Create socket.io server
 const io = socketIo(server, {
   cors: {
-    origin: "*", // or "http://localhost:3000"
+    origin: "*", // In production, replace with your frontend URL
     methods: ["GET", "POST"],
   },
 });
 
-// Initialize socket handling
+// Initialize Socket Logic
 setupSocket(io);
 
-// Start server
-const PORT = 3001;
-server.listen(PORT, () =>
-  console.log(`🚀 Server running at http://localhost:${PORT}`)
-);
+/* ===============================
+      START SERVER
+================================ */
+const PORT = 3001; // ✅ Forced to 3001
+
+server.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  
+  // E-Sarathi style verification: Ensure mailer variables are alive
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    console.log(`📧 Mailer Environment: Active (${process.env.EMAIL_USER})`);
+  } else {
+    console.error("❌ ERROR: Email credentials missing in .env file!");
+  }
+});
