@@ -6,6 +6,6 @@ const { uploadProfile } = require('../middleware/uploadMiddleware');
 // Signup with profile picture
 router.post('/signup', uploadProfile.single('profile_pic'), signup);
 router.post('/login', login);
-
+//------
 module.exports = router;
   
